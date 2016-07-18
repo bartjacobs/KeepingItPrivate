@@ -19,9 +19,19 @@ public class CoreDataManager {
 
     // MARK: - Core Data Stack
 
-    public private(set) lazy var managedObjectContext: NSManagedObjectContext = {
+    public private(set) lazy var mainManagedObjectContext: NSManagedObjectContext = {
         // Initialize Managed Object Context
         let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+
+        // Configure Managed Object Context
+        managedObjectContext.parentContext = self.privateManagedObjectContext
+
+        return managedObjectContext
+    }()
+
+    private lazy var privateManagedObjectContext: NSManagedObjectContext = {
+        // Initialize Managed Object Context
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
 
         // Configure Managed Object Context
         managedObjectContext.persistentStoreCoordinator = self.persistentStoreCoordinator
