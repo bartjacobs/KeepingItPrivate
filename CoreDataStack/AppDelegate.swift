@@ -15,9 +15,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let coreDataManager = CoreDataManager(modelName: "DataModel")
 
+    // MARK: - Application Life Cycle
+
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         print(coreDataManager.mainManagedObjectContext)
         return true
+    }
+
+    func applicationWillResignActive(application: UIApplication) {
+        coreDataManager.saveChanges()
+    }
+
+    func applicationWillTerminate(application: UIApplication) {
+        coreDataManager.saveChanges()
     }
 
 }
