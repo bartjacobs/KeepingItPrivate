@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let coreDataManager = CoreDataManager(modelName: "DataModel")
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        print(coreDataManager.managedObjectContext)
+        print(coreDataManager.mainManagedObjectContext)
         return true
     }
 
