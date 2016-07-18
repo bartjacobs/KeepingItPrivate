@@ -88,4 +88,32 @@ public class CoreDataManager {
         return documentsDirectoryURL.URLByAppendingPathComponent(storeName)
     }
 
+    // MARK: - Helper Methods
+
+    public func saveChanges() {
+        mainManagedObjectContext.performBlockAndWait({
+            do {
+                if self.mainManagedObjectContext.hasChanges {
+                    try self.mainManagedObjectContext.save()
+                }
+            } catch {
+                let saveError = error as NSError
+                print("Unable to Save Changes of Main Managed Object Context")
+                print("\(saveError), \(saveError.localizedDescription)")
+            }
+        })
+
+        privateManagedObjectContext.performBlock({
+            do {
+                if self.privateManagedObjectContext.hasChanges {
+                    try self.privateManagedObjectContext.save()
+                }
+            } catch {
+                let saveError = error as NSError
+                print("Unable to Save Changes of Main Managed Object Context")
+                print("\(saveError), \(saveError.localizedDescription)")
+            }
+        })
+    }
+    
 }
