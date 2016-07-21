@@ -110,7 +110,7 @@ public class CoreDataManager {
                 }
             } catch {
                 let saveError = error as NSError
-                print("Unable to Save Changes of Main Managed Object Context")
+                print("Unable to Save Changes of Private Managed Object Context")
                 print("\(saveError), \(saveError.localizedDescription)")
             }
         })
