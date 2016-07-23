@@ -1,23 +1,22 @@
-### Two Is Better Than One
+### Keeping It Private
 
 #### Author: Bart Jacobs
 
-## Why Is Two Better Than One
+In the previous lesson, we updated the Core Data stack by adding a private managed object context. Remember that the private managed object context performs two tasks:
 
-While many applications can get away with a single managed object context, there will be times when one managed object context won't cut it. The setup I have come to appreciate looks like this.
+- it pushes its changes to the persistent store coordinator
+- it acts as the parent of the main managed object context
 
-![Two Is Better Than One](https://cocoacasts.s3.amazonaws.com/building-the-perfect-core-data-stack/two-is-better-than-one/two-is-better-than-one.jpeg)
+This is what the Core Data stack currently looks like.
 
-The Core Data stack doesn't look overly complex. Right? Let me explain how it works and what the benefits are.
+![A Core Data Stack With Two Managed Object Contexts](https://cocoacasts.s3.amazonaws.com/building-the-perfect-core-data-stack/keeping-it-private/keeping-it-private-1.jpg)
 
-Even though the Core Data stack includes one persistent store coordinator and two managed object contexts, only one managed object context has a reference to the persistent store coordinator. This managed object context is private and only accessible by the class that manages the Core Data stack, the `CoreDataManager` class we created in the [previous lesson](https://cocoacasts.com/bring-your-own-core-data-stack/) of this course.
+It is important to understand that the private managed object context should only be access by the `CoreDataManager` class. Other objects, such as view controllers, use the main managed object context to interact with the Core Data stack.
 
-The second managed object context is a child of the private managed object context or, put differently, the private managed object context is the parent managed object context of the second managed object context. The child managed object context doesn't know about the persistent store coordinator.
+But this can result in threading and performance issues if the main managed object context is used by objects that should not be using it. For example, what happens if an object performs a long-running operation using the main managed object context to fetch data from the persistent store? What happens if the application downloads data in the background and inserts it into the persistent store?
 
-Why is this necessary? What are the benefits of using two managed object contexts? The private managed object context operates on a background queue. This means that it does not block the main thread, the thread on which the user interface is updated, when it performs operations.
+In such scenarios, it is better to create a separate managed object context that operates on a background thread. The Core Data stack we are after looks something like this.
 
-The second managed object context, which is a child of the private managed object context, operates on the main thread, which makes it ideal for any operations that involve the user interface. I talk more about threading and concurrency later in this course.
+![A Core Data Stack With Multiple Managed Object Contexts](https://cocoacasts.s3.amazonaws.com/building-the-perfect-core-data-stack/keeping-it-private/keeping-it-private-2.jpg)
 
-Using parent and child managed object contexts is also known as **nesting** managed object contexts. When using nested managed object contexts, there are a number of consequences you need to be aware of.
-
-**Read this article on [Cocoacasts](https://cocoacasts.com/two-is-better-than-one/)**.
+**Read this article on [Cocoacasts](https://cocoacasts.com/keeping-it-private/)**.
